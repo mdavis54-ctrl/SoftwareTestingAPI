@@ -18,6 +18,15 @@
   <properties>
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- UI test settings. Override any of them on the command line, for example
+    mvn verify -Dlab.mutant=P1   or   mvn verify -Dheadless=false -->
+    <app.url>http://localhost:8080</app.url>
+    <headless>true</headless>
+    <lab.mutant></lab.mutant>
+    <ui.excludedGroups>examples</ui.excludedGroups>
+    <!-- Overrides the older Selenium version that Spring Boot manages. -->
+    <selenium.version>4.52.0</selenium.version>
   </properties>
 
   <dependencies>
@@ -50,13 +59,116 @@
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
       <version>3.0.3</version>
     </dependency>
+
+    <!-- UI tests: Selenium drives a real Chrome browser. Selenium Manager downloads the
+    matching chromedriver automatically, so you only need Chrome installed. -->
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <!-- The built web UI is served by Spring Boot from /static. -->
+      <resource>
+        <directory>frontend/dist</directory>
+        <targetPath>static</targetPath>
+      </resource>
+    </resources>
+
     <plugins>
+      <!-- Builds the React web UI in /frontend. The first build downloads its own copy
+      of Node into frontend/node, so you don't need to install Node yourself. -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.15.4</version>
+        <configuration>
+          <workingDirectory>frontend</workingDirectory>
+          <nodeVersion>v24.14.0</nodeVersion>
+        </configuration>
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>install --no-audit --no-fund</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm run build</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run build</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- `mvn verify` starts the app, runs the UI tests (*IT.java) against it, then stops it. -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>start-app-for-ui-tests</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>start</goal>
+            </goals>
+            <configuration>
+              <arguments>
+                <argument>--lab.mutant=${lab.mutant}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop-app-after-ui-tests</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <excludedGroups>${ui.excludedGroups}</excludedGroups>
+          <systemPropertyVariables>
+            <app.url>${app.url}</app.url>
+            <headless>${headless}</headless>
+          </systemPropertyVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

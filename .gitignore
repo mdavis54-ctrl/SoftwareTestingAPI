@@ -6,3 +6,6 @@ target/
 .classpath
 .project
 newman/
+frontend/node/
+frontend/node_modules/
+frontend/dist/

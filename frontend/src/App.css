@@ -1,0 +1,195 @@
+:root{
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: #243247;
+    background-color: #f4f6f8;
+    line-height: 1.5;
+}
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+button,
+input,
+select{
+    font: inherit;
+}
+
+/* The wrapper for your pages */
+.main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+.main-content h1 {
+    font-size: 1.75rem;
+    margin: 24px 0 16px;
+}
+
+/* Align the navigation with the centered, 1400px page container. */
+.navbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px 24px;
+    min-height: 64px;
+    padding: 12px max(24px, calc((100% - 1400px) / 2 + 24px));
+    background-color: #333;
+    color: white;
+}
+
+.navbar h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: white;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+    background-color: #ffffff14;
+}
+
+.nav-link:focus-visible {
+    outline: 2px solid #adcaff;
+    outline-offset: 2px;
+}
+
+.student-container,
+.course-container{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #d7dee8;
+    border-radius: 10px;
+}
+
+.student-container input,
+.course-container input{
+    flex: 1 1 180px;
+    min-width: 0;
+}
+
+/* Shared input and dropdown appearance*/
+.main-content input,
+.main-content select{
+    padding: 10px 12px;
+    color: #243247;
+    background-color: white;
+    border: 1px solid #a8b4c4;
+    border-radius: 6px;
+}
+
+.main-content input::placeholder{
+    color: #617086;
+}
+
+/* shared button appearance */
+.main-content button{
+    padding: 10px 14px;
+    background-color: white;
+    border: 1px solid #a8b4c4;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.main-content button:hover{
+    border-color: #2557a7;
+}
+
+/* primary creation actions */
+.student-container button,
+.course-container button{
+    color: white;
+    background-color: #2557a7;
+    border-color: #2557a7;
+}
+
+/* visible focus for keyboard navigation */
+.main-content :is(input, select, button):focus{
+    outline: 3px solid #2557a7;
+    outline-offset: 2px;
+}
+
+
+/* Table foundation */
+.main-content table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border: 1px solid #d7dee8;
+}
+
+.table-scroll{
+    width: 100%;
+    overflow-x: auto;
+}
+
+.main-content th,
+.main-content td {
+    padding: 12px 16px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #d7dee8;
+}
+
+/* Column headings */
+.main-content th {
+    background-color: #e9eef5;
+    color: #34445c;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Highlight data rows when hovered */
+.main-content tbody tr[id]:hover {
+    background-color: #f5f8fc;
+}
+
+/* Keep action labels together */
+.main-content table button {
+    white-space: nowrap;
+}
+
+/* Preserve room for each table's columns */
+#student-list-table {
+    min-width: 640px;
+}
+
+#course-list-table {
+    min-width: 1100px;
+}
+
+/* Let controls inside expanded edit rows wrap */
+.main-content td[colspan] > div {
+    flex-wrap: wrap;
+    align-items: center;
+}
